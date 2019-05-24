@@ -7,18 +7,19 @@ import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.*;
+import java.lang.Character;
 
 public class WordCount {
     public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
 		private Text word = new Text();
 		private boolean caseSensitive = false;
-		protected void setup(Mapper.Context context)
+		/*protected void setup(Mapper.Context context)
 			throws IOException,
 				InterruptedException {
 			Configuration config = context.getConfiguration();
 			this.caseSensitive = config.getBoolean("wordcount.case.sensitive", false);
-		}
+		}*/
 
         public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
             String line = value.toString();
@@ -26,9 +27,18 @@ public class WordCount {
 				line = line.toLowerCase();
 			}
             StringTokenizer tokenizer = new StringTokenizer(line);
+			char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
             while (tokenizer.hasMoreTokens()) {
                 word.set(tokenizer.nextToken());
-                output.collect(word, one);
+				char firstletter = word.getFirstLetter();
+				for(int i=0; i < 26; i++)
+				{
+					if(firstletter == alphabet[i])
+					{
+						output.collect(alphabet[i],one);
+					}
+				}					
+                //output.collect(word, one);
             }
 }
 }
