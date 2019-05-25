@@ -14,12 +14,6 @@ public class WordCount {
         private final static IntWritable one = new IntWritable(1);
 		private Text word = new Text();
 		private boolean caseSensitive = false;
-		/*protected void setup(Mapper.Context context)
-			throws IOException,
-				InterruptedException {
-			Configuration config = context.getConfiguration();
-			this.caseSensitive = config.getBoolean("wordcount.case.sensitive", false);
-		}*/
 
         public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
             String line = value.toString();
@@ -29,16 +23,19 @@ public class WordCount {
             StringTokenizer tokenizer = new StringTokenizer(line);
 			char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
             while (tokenizer.hasMoreTokens()) {
-                word.set(tokenizer.nextToken());
-				char firstletter = word.getFirstLetter();
+				String word1 = tokenizer.nextToken();
+                //word.set(tokenizer.nextToken());
+				Character letter = new Character(word1.charAt(0));
+				//char firstletter = letter.charValue();
 				for(int i=0; i < 26; i++)
 				{
-					if(firstletter == alphabet[i])
+					if(letter.charValue() == alphabet[i])
 					{
-						output.collect(alphabet[i],one);
+						String templetter = letter.toString();
+                        word.set(templetter);
+                        output.collect(word,one);
 					}
 				}					
-                //output.collect(word, one);
             }
 }
 }
