@@ -8,8 +8,7 @@ for line in sys.stdin:
 	#removing leading and trailing whitespaces
 	line = line.strip()
 	#checking if the line is blank before loading it as json
-	if not line:continue
-		#reading in the given json file
+	if not line:continue #reading in the given json file 
 		tweet = json.loads(line)
 		if not tweet.get('text'):continue
 			word_list = {'han', 'hon', 'den', 'det', 'denna', 'denne', 'hen'}
