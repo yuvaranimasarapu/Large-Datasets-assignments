@@ -13,23 +13,19 @@ public class FirstLetterCount {
     public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
 		private Text word = new Text();
-		private boolean caseSensitive = false;
 
         public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
             	String line = value.toString();
-		if (!caseSensitive) {
-			line = line.toLowerCase();
-		}
-            	StringTokenizer tokenizer = new StringTokenizer(line);
-		char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+            	StringTokenizer tokenizer = new StringTokenizer(line.toLowerCase());
+				char[] letters = "abcdefghijklmnopqrstuvwxyz".toCharArray();
             	while (tokenizer.hasMoreTokens()) {
-                String word1 = tokenizer.nextToken();
-				Character letter = new Character(word1.charAt(0));
-				for(int i=0; i < 26; i++)
+                String temp_word = tokenizer.nextToken();
+				Character firstletter = new Character(temp_word.charAt(0));
+				for(int i=0; i < letters.length; i++)
 				{
-					if(letter.charValue() == alphabet[i])
+					if(firstletter == letters[i])
 					{
-						String templetter = letter.toString();
+						String templetter = firstletter.toString();
 						word.set(templetter);
 						output.collect(word,one);
 					}

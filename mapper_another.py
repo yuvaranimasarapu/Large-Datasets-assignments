@@ -3,20 +3,18 @@
 
 import sys
 import json
-import re
 
 for line in sys.stdin:
-	if len(line.strip()) != 1:#checking for empty line with or without whitespaces
+	if len(line) != 1:
 		try:
-			#reading in the given json file
-			tweet_line = json.loads(line)
+			line = line.strip()
+			tweets = json.loads(line)
 		except:
 			continue
-		#declaring pronouns list
-		pronoun_list = {'han', 'hon', 'den', 'det', 'denna', 'denne', 'hen'}
-		if not tweet_line['retweeted']:#check for retweets
-			text = tweet_line['text'].lower()#converting tweets to lower case
-			for eachword in pronoun_list:#looping through pronouns list 
-				if re.search(eachword,text):#searching for each pronoun in tweet text
-					print('%s\t%s' % (eachword, 1))
-			print('%s\t%s' % ('unique tweets count',1))
+		check_word = {'DEN', 'DET', 'DENNA', 'DENNE', 'HAN', 'HON', 'HEN'}
+		tweets_text = tweets['text']
+		if not tweets['retweeted']:
+			for word in check_word:
+				if word in tweets_text.upper():
+					print('%s\t%s' % (word, 1))
+			print('%s\t%s' % ('unique_count',1))
