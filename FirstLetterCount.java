@@ -9,34 +9,39 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.*;
 import java.lang.Character;
 
-public class WordCount {
+public class FirstLetterCount {
     public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
 		private Text word = new Text();
 		private boolean caseSensitive = false;
+		/*protected void setup(Mapper.Context context)
+			throws IOException,
+				InterruptedException {
+			Configuration config = context.getConfiguration();
+			this.caseSensitive = config.getBoolean("wordcount.case.sensitive", false);
+		}*/
 
         public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
-            String line = value.toString();
-			if (!caseSensitive) {
-				line = line.toLowerCase();
-			}
-            StringTokenizer tokenizer = new StringTokenizer(line);
-			char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-            while (tokenizer.hasMoreTokens()) {
-				String word1 = tokenizer.nextToken();
-                //word.set(tokenizer.nextToken());
+            	String line = value.toString();
+		if (!caseSensitive) {
+			line = line.toLowerCase();
+		}
+            	StringTokenizer tokenizer = new StringTokenizer(line);
+		char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+            	while (tokenizer.hasMoreTokens()) {
+                		String word1 = tokenizer.nextToken();
+				//word.set(tokenizer.nextToken());
 				Character letter = new Character(word1.charAt(0));
-				//char firstletter = letter.charValue();
 				for(int i=0; i < 26; i++)
 				{
 					if(letter.charValue() == alphabet[i])
 					{
 						String templetter = letter.toString();
-                        word.set(templetter);
-                        output.collect(word,one);
+						word.set(templetter);
+						output.collect(word,one);
 					}
 				}					
-            }
+		}
 }
 }
 
@@ -51,8 +56,8 @@ public class WordCount {
     }
 
     public static void main(String[] args) throws Exception {
-        JobConf conf = new JobConf(WordCount.class);
-        conf.setJobName("wordcount");
+        JobConf conf = new JobConf(FirstLetterCount.class);
+        conf.setJobName("firstlettercount");
 
         conf.setOutputKeyClass(Text.class);
         conf.setOutputValueClass(IntWritable.class);
@@ -60,7 +65,7 @@ public class WordCount {
         conf.setMapperClass(Map.class);
         conf.setReducerClass(Reduce.class);
 		
-		conf.setInputFormat(TextInputFormat.class);
+	conf.setInputFormat(TextInputFormat.class);
         conf.setOutputFormat(TextOutputFormat.class);
 
         FileInputFormat.setInputPaths(conf, new Path(args[0]));
@@ -69,4 +74,5 @@ public class WordCount {
         JobClient.runJob(conf);
     }
 }
+
 
